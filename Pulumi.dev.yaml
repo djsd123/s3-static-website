@@ -4,5 +4,5 @@ config:
   s3-static-website:domain: www.sub.mcallison.co.uk
   s3-static-website:pathToWebsiteContents: ./www
     #description: Relative path to the website's contents (e.g. the `./www` folder)
-  s3-static-website:certificateArn: arn:aws:acm:us-east-1:340594004420:certificate/326e2d09-ab4e-4bc4-8f44-6a0a3376d821
+  s3-static-website:certificateArn: ""
     #description: (Optional) ACM certificate ARN for the target domain; must be in the us-east-1 region. If omitted, a certificate will be created.
