@@ -1,0 +1,14 @@
+name: s3-static-website
+runtime: nodejs
+description: Host a static website on s3
+template:
+  config:
+    aws:region:
+      default: "eu-west-1"
+    aws:profile:
+      default: "personal"
+    s3-static-website:domain:
+    s3-static-website:pathToWebsiteContents:
+      description: Relative path to the website's contents (e.g. the `./www` folder)
+    s3-static-website:certificateArn:
+      description: (Optional) ACM certificate ARN for the target domain; must be in the us-east-1 region. If omitted, a certificate will be created.
