@@ -29,8 +29,23 @@ yarn install or npm install
 ```
 
 ```bash
+pulumi preview
+```
+
+```bash
 pulumi up
 ```
+
+#### GitHub Actions
+
+You can also deploy by using [actions](https://github.com/features/actions).  The actions in this repo 
+work when you create a __Pull Request__, then merge to master. You'll need to add the credentials mentioned below as secrets 
+to your github repo
+
+**Required**
+* [AWS ACCESS ID and SECRET KEY](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
+* [PULUMI ACCESS TOKEN](https://www.pulumi.com/docs/intro/console/accounts-and-organizations/accounts/#access-tokens)
+
 
 #### Outputs
 * targetDomainEndpoint
