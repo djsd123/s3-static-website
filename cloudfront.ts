@@ -42,6 +42,7 @@ const cloudFrontDistributionArgs: aws.cloudfront.DistributionArgs = {
             queryString: false,
         },
 
+        compress: true,
         minTtl: 0,
         defaultTtl: vars.ttl,
         maxTtl: vars.ttl,
