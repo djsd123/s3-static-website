@@ -14,7 +14,6 @@
     },
     "files": [
         "index.ts",
-        "./acm.ts",
         "./cloudfront.ts",
         "./s3.ts",
         "./route53.ts"
