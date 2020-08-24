@@ -1,21 +1,16 @@
 import * as aws from '@pulumi/aws'
-import * as pulumi from '@pulumi/pulumi'
 import {
     PolicyResource,
     ReportViolation,
     StackValidationArgs,
     StackValidationPolicy
 } from '@pulumi/policy'
-
-const stackConfig = new pulumi.Config('s3-static-website')
-const config = {
-    domain: stackConfig.require('domain')
-}
-const Unrecommended_Protocols: Array<String> = ['TLSv1.1', 'TLSv1', 'SSLv3']
+import {mainBucket} from "../s3";
+import { Input } from '@pulumi/pulumi'
 
 export const cloudFrontStackPolicy: StackValidationPolicy = {
     name: 's3-static-website-cloudfront',
-    description: 'CloudFront integration tests and policies for the s3-static-websites',
+    description: 'CloudFront integration tests and policies for s3-static-website \n',
     enforcementLevel: 'mandatory',
     validateStack: async (args: StackValidationArgs, reportViolation: ReportViolation) => {
 
@@ -30,17 +25,44 @@ export const cloudFrontStackPolicy: StackValidationPolicy = {
         }
 
         const distribution = distributions[0].asType(aws.cloudfront.Distribution)!
-        console.log(distribution.origins[0].customOriginConfig)
+        const Unrecommended_Protocols: Array<String> = ['TLSv1.1', 'TLSv1', 'SSLv3']
+
         distribution.origins.forEach(origin => {
-            if (origin.customOriginConfig?.originSslProtocols.some(version => {
-                return Unrecommended_Protocols.includes(version)
+            if (origin.customOriginConfig?.originSslProtocols.some(supersededTlsVersion => {
+                return Unrecommended_Protocols.includes(supersededTlsVersion)
             })) {
                 reportViolation(
                     `Protocols; ${Unrecommended_Protocols.toString()} are considered unsecure and are not ` +
                     `allowed in this distribution (${origin.originId})`
                 )
-                return
             }
         })
+
+        function UneededMethods(methods: string): boolean {
+            return ['PUT', 'POST', 'PATCH', 'DELETE'].includes(methods)
+        }
+
+        const defaultCacheBehaviour = distribution.defaultCacheBehavior
+
+        if (defaultCacheBehaviour.allowedMethods.some(UneededMethods) ||
+            defaultCacheBehaviour.cachedMethods.some(UneededMethods)
+        ) {
+            reportViolation(
+                'The default cache behaviours allowedMethods and cachedMethods can only contain ' +
+                'the following methods: GET, HEAD, OPTIONS. Found: \n' +
+                `${defaultCacheBehaviour.allowedMethods} configured for allowedMethods \n` +
+                'and \n' +
+                `${defaultCacheBehaviour.cachedMethods} configured for cachedMethods`
+            )
+        }
+
+        const stackProtocolPolicy: string = 'redirect-to-https'
+
+        if (defaultCacheBehaviour.viewerProtocolPolicy !== stackProtocolPolicy) {
+            reportViolation(
+                `Expected Viewer Protocol Policy: \"${stackProtocolPolicy}\", ` +
+                `Found: \"${defaultCacheBehaviour.viewerProtocolPolicy}\"`
+            )
+        }
     }
 }
