@@ -49,7 +49,7 @@ const cloudFrontDistributionArgs: aws.cloudfront.DistributionArgs = {
     },
 
     // "All" is the most broad distribution, and also the most expensive.
-    // "100" is the least broad, and also the least expensive.
+    // "100" is the least broad (USA, Canada and Europe), and also the least expensive.
     priceClass: "PriceClass_100",
 
     // You can customize error responses. When CloudFront recieves an error from the origin (e.g. S3 or some other
