@@ -16,7 +16,7 @@ jobs:
       - name: Pulumi preview
         uses: docker://pulumi/actions
         with:
-          args: preview
+          args: preview --policy-pack policypack
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
