@@ -4,9 +4,37 @@ import { mainBucket, logBucket } from "./s3";
 import { Utils } from "./utils";
 import * as vars from "./vars";
 
-export {cdn};
+export { cdn };
 
 const domainParts = Utils.getDomainAndSubDomain(vars.config.domain);
+
+// Create Origin Access Identity
+const oai = new aws.cloudfront.OriginAccessIdentity('origin-access-identity', {
+    comment: 'Ensure visitors cannot access the site using the S3 endpoint url'
+})
+
+const originAccessIdentityPolicyStatement: aws.iam.PolicyStatement[] = [{
+    Sid: 'originAccess',
+    Action: ['s3:GetObject'],
+    Effect: 'Allow',
+
+    Principal: {
+        AWS: oai.s3CanonicalUserId
+    },
+
+    Resource: `${mainBucket.arn}/*`
+}]
+
+const originAccessIdentityPolicy: aws.iam.PolicyDocument = {
+    Version: '2012-10-17',
+    Id: 'mainBucket',
+    Statement: originAccessIdentityPolicyStatement
+}
+
+const originAccessIdentityPolicyAttachment = new aws.s3.BucketPolicy('originPolicyAttachment', {
+    bucket: mainBucket.id,
+    policy: originAccessIdentityPolicy,
+})
 
 // Cloudfront distribution args
 const cloudFrontDistributionArgs: aws.cloudfront.DistributionArgs = {
@@ -17,6 +45,9 @@ const cloudFrontDistributionArgs: aws.cloudfront.DistributionArgs = {
         {
             originId: mainBucket.arn,
             domainName: mainBucket.websiteEndpoint,
+            s3OriginConfig: {
+                originAccessIdentity: oai.cloudfrontAccessIdentityPath
+            },
             customOriginConfig: {
                 // Amazon S3 doesn't support HTTPS connections when using an S3 bucket configured as a website endpoint.
                 // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesOriginProtocolPolicy
