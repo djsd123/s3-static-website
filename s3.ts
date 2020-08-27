@@ -3,11 +3,11 @@ import * as pulumi from "@pulumi/pulumi";
 
 import * as vars from "./vars";
 
-export {mainBucket, logBucket};
+export { mainBucket, logBucket };
 
 const mainBucket = new aws.s3.Bucket("mainBucket",{
     bucket: vars.config.domain,
-    acl: "public-read",
+    acl: "private",
     website: {
         indexDocument: "index.html",
         errorDocument: "404.html",

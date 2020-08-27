@@ -27,9 +27,9 @@ export const s3stackPolicy: StackValidationPolicy = {
         const mainBucket: PolicyResource | undefined = s3Buckets.find(s3Bucket => {
             return s3Bucket.props.bucket === config.domain
         })
-        if (mainBucket?.props.acl === 'public-read-write') {
+        if (mainBucket?.props.acl === 'public-read-write' || mainBucket?.props.acl === 'public-read') {
             reportViolation(
-                'You cannot set public-read-write on the website bucket. ' +
+                'You cannot set public-read or public-read-write on the website bucket. ' +
                 'Read more about ACLs here: https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html'
             )
             return
