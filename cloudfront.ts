@@ -1,4 +1,5 @@
 import * as aws from "@pulumi/aws";
+import * as pulumi from '@pulumi/pulumi'
 
 import { mainBucket, logBucket } from "./s3";
 import { Utils } from "./utils";
@@ -19,10 +20,15 @@ const originAccessIdentityPolicyStatement: aws.iam.PolicyStatement[] = [{
     Effect: 'Allow',
 
     Principal: {
-        AWS: oai.s3CanonicalUserId
+        AWS: oai.iamArn
     },
 
-    Resource: `${mainBucket.arn}/*`
+    /* Outputs are just promises and passing them calls toString on the output
+    for some reason pulumi complains in some cases that this is not supported.
+    See: https://github.com/pulumi/pulumi/pull/2496/files
+    Hence: using the `interpolate` function
+     */
+    Resource: pulumi.interpolate `${mainBucket.arn}/*`
 }]
 
 const originAccessIdentityPolicy: aws.iam.PolicyDocument = {
@@ -44,10 +50,11 @@ const cloudFrontDistributionArgs: aws.cloudfront.DistributionArgs = {
     origins: [
         {
             originId: mainBucket.arn,
-            domainName: mainBucket.websiteEndpoint,
+            domainName: mainBucket.bucketRegionalDomainName,
             s3OriginConfig: {
                 originAccessIdentity: oai.cloudfrontAccessIdentityPath
             },
+            /*
             customOriginConfig: {
                 // Amazon S3 doesn't support HTTPS connections when using an S3 bucket configured as a website endpoint.
                 // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesOriginProtocolPolicy
@@ -56,6 +63,8 @@ const cloudFrontDistributionArgs: aws.cloudfront.DistributionArgs = {
                 httpsPort: 443,
                 originSslProtocols: ["TLSv1.2"],
             },
+
+             */
         },
     ],
     defaultRootObject: "index.html",

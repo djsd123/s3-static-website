@@ -10,3 +10,4 @@ export const targetDomainEndpoint = `https://${vars.config.domain}/`;
 export const cloudFrontDomain = cloudfront.cdn.domainName;
 export const mainBucketURI = pulumi.interpolate `s3://${s3.mainBucket.bucket}`;
 export const mainBucketWebsiteEndpoint = s3.mainBucket.websiteEndpoint;
+export const cdnUrn = cloudfront.cdn.urn
