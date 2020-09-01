@@ -14,6 +14,14 @@ const mainBucket = new aws.s3.Bucket("mainBucket",{
     }
 });
 
+const mainBucketPublicAccessBlock = new aws.s3.BucketPublicAccessBlock('mainBucketPublicAccessBlock', {
+    bucket: mainBucket.id,
+    blockPublicAcls: true,
+    blockPublicPolicy: true,
+    ignorePublicAcls: true,
+    restrictPublicBuckets: true
+})
+
 import * as fs from "fs";
 import * as mime from "mime";
 import * as path from "path";
