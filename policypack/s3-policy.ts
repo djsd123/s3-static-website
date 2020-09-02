@@ -7,12 +7,14 @@ import {
     StackValidationPolicy
 } from '@pulumi/policy'
 
+export { s3stackPolicy, s3PublicAccessBlockPolicy }
+
 const stackConfig = new pulumi.Config('s3-static-website')
 const config = {
     domain: stackConfig.require('domain')
 }
 
-export const s3stackPolicy: StackValidationPolicy = {
+const s3stackPolicy: StackValidationPolicy = {
     name: 's3-static-website-s3',
     description: 'S3 integration tests and policies for the s3-static-websites',
     enforcementLevel: 'mandatory',
@@ -44,6 +46,40 @@ export const s3stackPolicy: StackValidationPolicy = {
                 'Read more about ACLs here: https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html'
             )
             return
+        }
+    }
+}
+
+const s3PublicAccessBlockPolicy: StackValidationPolicy = {
+    name: 's3-static-website-public-access-block',
+    description: 'S3 public access block integration and policy verification',
+    enforcementLevel: 'mandatory',
+    validateStack: async (args: StackValidationArgs, reportViolation: ReportViolation) => {
+
+        const s3PublicAccessBlockOjects: PolicyResource[] = args.resources.filter(resource => {
+            return resource.isType(aws.s3.BucketPublicAccessBlock)
+        })
+        if (s3PublicAccessBlockOjects.length !== 1) {
+            reportViolation(`Expected one BucketPublicAccessBlock object. 
+            Got ${s3PublicAccessBlockOjects.length}`)
+        }
+
+        const s3PublicAccessBlockOject: string | any = s3PublicAccessBlockOjects[0].props
+
+        if (s3PublicAccessBlockOject.bucket !== config.domain) {
+            reportViolation(`Expected the target bucket to be ${config.domain}. 
+            Got ${s3PublicAccessBlockOject.bucket}`)
+        }
+
+        if (s3PublicAccessBlockOject.blockPublicAcls === false ||
+            s3PublicAccessBlockOject.blockPublicPolicy === false ||
+            s3PublicAccessBlockOject.ignorePublicAcls === false ||
+            s3PublicAccessBlockOject.restrictPublicBuckets === false) {
+            reportViolation(`Public access to bucket: ${config.domain} is prohibited. \nResults: 
+            blockPublicAcls       = ${s3PublicAccessBlockOject.blockPublicAcls}
+            blockPublicPolicy     = ${s3PublicAccessBlockOject.blockPublicPolicy}
+            ignorePublicAcls      = ${s3PublicAccessBlockOject.ignorePublicAcls}
+            restrictPublicBuckets = ${s3PublicAccessBlockOject.restrictPublicBuckets}`)
         }
     }
 }
