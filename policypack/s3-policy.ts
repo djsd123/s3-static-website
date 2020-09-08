@@ -56,30 +56,30 @@ const s3PublicAccessBlockPolicy: StackValidationPolicy = {
     enforcementLevel: 'mandatory',
     validateStack: async (args: StackValidationArgs, reportViolation: ReportViolation) => {
 
-        const s3PublicAccessBlockOjects: PolicyResource[] = args.resources.filter(resource => {
+        const s3PublicAccessBlockObjects: PolicyResource[] = args.resources.filter(resource => {
             return resource.isType(aws.s3.BucketPublicAccessBlock)
         })
-        if (s3PublicAccessBlockOjects.length !== 1) {
+        if (s3PublicAccessBlockObjects.length !== 1) {
             reportViolation(`Expected one BucketPublicAccessBlock object. 
-            Got ${s3PublicAccessBlockOjects.length}`)
+            Got ${s3PublicAccessBlockObjects.length}`)
         }
 
-        const s3PublicAccessBlockOject: string | any = s3PublicAccessBlockOjects[0].props
+        const s3PublicAccessBlockObject: string | any = s3PublicAccessBlockObjects[0].props
 
-        if (s3PublicAccessBlockOject.bucket !== config.domain) {
+        if (s3PublicAccessBlockObject.bucket !== config.domain) {
             reportViolation(`Expected the target bucket to be ${config.domain}. 
-            Got ${s3PublicAccessBlockOject.bucket}`)
+            Got ${s3PublicAccessBlockObject.bucket}`)
         }
 
-        if (s3PublicAccessBlockOject.blockPublicAcls === false ||
-            s3PublicAccessBlockOject.blockPublicPolicy === false ||
-            s3PublicAccessBlockOject.ignorePublicAcls === false ||
-            s3PublicAccessBlockOject.restrictPublicBuckets === false) {
+        if (s3PublicAccessBlockObject.blockPublicAcls === false ||
+            s3PublicAccessBlockObject.blockPublicPolicy === false ||
+            s3PublicAccessBlockObject.ignorePublicAcls === false ||
+            s3PublicAccessBlockObject.restrictPublicBuckets === false) {
             reportViolation(`Public access to bucket: ${config.domain} is prohibited. \nResults: 
-            blockPublicAcls       = ${s3PublicAccessBlockOject.blockPublicAcls}
-            blockPublicPolicy     = ${s3PublicAccessBlockOject.blockPublicPolicy}
-            ignorePublicAcls      = ${s3PublicAccessBlockOject.ignorePublicAcls}
-            restrictPublicBuckets = ${s3PublicAccessBlockOject.restrictPublicBuckets}`)
+            blockPublicAcls       = ${s3PublicAccessBlockObject.blockPublicAcls}
+            blockPublicPolicy     = ${s3PublicAccessBlockObject.blockPublicPolicy}
+            ignorePublicAcls      = ${s3PublicAccessBlockObject.ignorePublicAcls}
+            restrictPublicBuckets = ${s3PublicAccessBlockObject.restrictPublicBuckets}`)
         }
     }
 }
