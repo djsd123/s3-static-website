@@ -4,6 +4,7 @@ import * as pulumi from '@pulumi/pulumi'
 import { mainBucket, logBucket } from "./s3";
 import { Utils } from "./utils";
 import * as vars from "./vars";
+import { s3StaticWebsiteACL } from './waf-v2'
 
 export { cdn };
 
@@ -118,6 +119,8 @@ const cloudFrontDistributionArgs: aws.cloudfront.DistributionArgs = {
         includeCookies: false,
         prefix: `${vars.config.domain}/`,
     },
+
+    webAclId: s3StaticWebsiteACL.arn
 };
 
 // Create the Cloudfront distribution
