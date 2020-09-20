@@ -32,7 +32,7 @@ export const cloudFrontStackPolicy: StackValidationPolicy = {
                 return Unrecommended_Protocols.includes(supersededTlsVersion)
             })) {
                 reportViolation(
-                    `Protocols; ${Unrecommended_Protocols.toString()} are considered unsecure and are not ` +
+                    `Protocols; ${Unrecommended_Protocols.toString()} are considered insecure and are not ` +
                     `allowed in this distribution (${origin.originId})`
                 )
             }
