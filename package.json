@@ -1,7 +1,7 @@
 {
     "name": "s3-static-website",
     "devDependencies": {
-        "@types/node": "^8.0.0"
+        "@types/node": "^14.11.1"
     },
     "dependencies": {
         "@pulumi/aws": "^3.0.0",
@@ -10,7 +10,8 @@
         "@pulumi/pulumi": "^1.0.0",
         "@types/mime": "^2.0.1",
         "grpc": "^1.24.3",
-        "mime": "^2.4.4"
+        "mime": "^2.4.4",
+        "ts-node": "^9.0.0"
     },
     "version": "0.1.0",
     "description": "Host a static website on s3",
