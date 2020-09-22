@@ -14,7 +14,7 @@ const mainBucket = new aws.s3.Bucket("mainBucket",{
     }
 });
 
-const mainBucketPublicAccessBlock = new aws.s3.BucketPublicAccessBlock('mainBucketPublicAccessBlock', {
+new aws.s3.BucketPublicAccessBlock('mainBucketPublicAccessBlock', {
     bucket: mainBucket.id,
     blockPublicAcls: true,
     blockPublicPolicy: true,
@@ -57,10 +57,6 @@ crawlContentDirirecotry(webContentsRootPath, (filePath: string) => {
         parent: mainBucket,
     });
 });
-
-
-// Export the name of the bucket
-export const bucketName = mainBucket.id;
 
 // logsBucket is an S3 bucket that will contain the CDN's request logs.
 const logBucket = new aws.s3.Bucket("requestLogs", {
