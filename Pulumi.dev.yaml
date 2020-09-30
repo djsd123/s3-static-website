@@ -2,8 +2,8 @@ config:
   aws:profile: personal
   aws:region: eu-west-1
   s3-static-website:certificateArn:
-    secure: AAABAKaWHJirEVML6ofGbtx8YW7xXkbezIRNKluXRAaSTvQJNpoLiMnOC9nrJ88zEy4Vo01mPkCzxHPTc7JuAJureOOj9QchlpU7JNC8v85H0A1j9q+ytN/J/0o/Libll4YNgyK/b15ctt8VvDskwujsnQ==
-  #description: (Optional) ACM certificate ARN for the target domain; must be in the us-east-1 region. If omitted, a certificate will be created.
+    secure: AAABAFYNZpPBlZaEScykGOKmjWEvwyYCik2o3m0sEoIcoQdLKbUJ0AtOrSOaT4sPr1fm5nEb2NU6YSxB/Cg9K89EBeP+OFnPuP3znXOnmqpXrGQJrIEQYr2GUW7MERTaooWA9IaQ3DVBEpF4eyN0PvxNLQ==
+    #description: (Optional) ACM certificate ARN for the target domain; must be in the us-east-1 region. If omitted, a certificate will be created.
   s3-static-website:domain: www.sub.mcallison.co.uk
   s3-static-website:pathToWebsiteContents: ./www
   #description: Relative path to the website's contents (e.g. the `./www` folder)
