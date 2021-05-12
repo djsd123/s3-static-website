@@ -9,7 +9,7 @@
         "@pulumi/policy": "^1.2.0",
         "@pulumi/pulumi": "^1.0.0",
         "@types/mime": "^2.0.1",
-        "grpc": "^1.24.3",
+        "grpc": "^1.24.9",
         "mime": "^2.4.4",
         "ts-node": "^9.0.0"
     },
